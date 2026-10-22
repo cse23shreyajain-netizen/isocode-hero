@@ -66,6 +66,12 @@ function App() {
 
       gsap.set(car, { x: 0 });
 
+      gsap.set(car, {
+  x: 0,
+  yPercent: -50,
+  autoAlpha: 1,
+});
+
       // Cards remain hidden until scrolling reveals them.
       gsap.set(cards, {
         autoAlpha: 0,
@@ -146,13 +152,27 @@ function App() {
         );
       });
 
-      if (car.complete) {
-        ScrollTrigger.refresh();
-      } else {
-        car.addEventListener("load", () => ScrollTrigger.refresh(), {
-          once: true,
-        });
-      }
+      const refreshScrollTrigger = () => {
+  requestAnimationFrame(() => {
+    ScrollTrigger.refresh();
+  });
+};
+
+if (car.complete) {
+  refreshScrollTrigger();
+} else {
+  car.addEventListener("load", refreshScrollTrigger, {
+    once: true,
+  });
+}
+
+if (document.readyState === "complete") {
+  refreshScrollTrigger();
+} else {
+  window.addEventListener("load", refreshScrollTrigger, {
+    once: true,
+  });
+}
     }, section);
 
     return () => {
